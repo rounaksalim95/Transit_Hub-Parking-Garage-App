@@ -120,7 +120,11 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(getBaseContext(), Parking_Space_Activity.class);
-                        intent.putExtra("floor", floor.toString());
+                        try {
+                            intent.putExtra("floor", floors.getJSONObject(view.getId()).toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         startActivity(intent);
                     }
                 });
