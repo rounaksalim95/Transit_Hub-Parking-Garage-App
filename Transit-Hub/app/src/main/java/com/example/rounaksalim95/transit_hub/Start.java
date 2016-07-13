@@ -21,9 +21,6 @@ public class Start extends AppCompatActivity {
     // Holds reference to the LinearLayout inside the ScrollView to add buttons dynamically
     private LinearLayout mLinearLayout;
 
-    // Holds the Json objects for the garages
-    private JSONArray garageHolder;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,13 +54,16 @@ public class Start extends AppCompatActivity {
                 garage = garageJson.getJSONObject(i);
                 garageName = garage.getString("garageName");
 
-                button.setText("This is : " + garageName);
+                button.setText(garageName);
+
+                button.setId(i);
 
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                        intent.putExtra("garage", garageJson.toString());
+                        intent.putExtra("garages", garageJson.toString());
+                        intent.putExtra("id", view.getId());
                         startActivity(intent);
                     }
                 });

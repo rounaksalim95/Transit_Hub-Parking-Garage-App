@@ -5,34 +5,59 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TableLayout;
-import android.widget.TableRow;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.*;
 
 import com.loopj.android.http.*;
 
-import cz.msebera.android.httpclient.Header;
-
 public class MainActivity extends AppCompatActivity {
 
-    private TableLayout mTableLayout;
+    private LinearLayout mLinearLayout;
 
     // JSONArray that holds the different garage Json objects
     private JSONArray garageHolder;
+
+    // JSONObject that holds the Json data for the appropriate garage
+    private JSONObject garage;
+
+    // JSONArray that holds the Json data for the floors in the garage
+    private JSONArray floors;
+
+    // JSONObject that holds each individual floor
+    private JSONObject floor;
+
+    // Name of the garage
+    private String garageName;
+
+    // Id of the garage
+    private int id;
+
+    // Default value used while extracting id from intent
+    private final int DEFAULT_VALUE = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTableLayout = (TableLayout) findViewById(R.id.mainTable);
+        mLinearLayout = (LinearLayout) findViewById(R.id.floorView);
+        Intent intent = getIntent();
+
+        // Get the id of the garage
+        id = intent.getIntExtra("id", DEFAULT_VALUE);
 
         // Get the JsonArray String data present in the intent
-        Intent intent = getIntent();
-        String jsonString = intent.getDataString();
+        try {
+            garageHolder = new JSONArray(intent.getStringExtra("garages"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
+        System.out.println("+++++++++++++++++++++++++++++++" + "\n" + garageHolder + "\n" + "This is the id: "  + id);
 
         try {
             test();
@@ -69,84 +94,49 @@ public class MainActivity extends AppCompatActivity {
 
     public void test() throws JSONException {
 
-        for (int i = 1; i < 10; i += 2) {
-            // Create a table row to add to the TableLayout
-            TableRow row = new TableRow(this);
+        // Get the Json data for the appropriate garage
+        garage = garageHolder.getJSONObject(id);
 
-            // Declare the layoutParams for the table row and textviews
-            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT);
-            TableRow.LayoutParams tvlp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-            row.setLayoutParams(lp);
+        floors = garage.getJSONArray("floors");
 
-            TextView lhs = new TextView(this);
-            lhs.setId(i);
-            lhs.setTextSize(30);
-            lhs.setText("My id is: " + Integer.toString(lhs.getId()));
-            lhs.setLayoutParams(tvlp);
-            row.addView(lhs);
+        int floorNumber;
 
+        if (floors != null) {
 
-            TextView rhs = new TextView(this);
-            rhs.setId(i + 1);
-            rhs.setTextSize(30);
-            rhs.setText("My id is: " + Integer.toString(rhs.getId()));
-            rhs.setLayoutParams(tvlp);
-            row.addView(rhs);
+            // Loop through all the garages in the database and display buttons for them
+            for (int i = 0; i < floors.length(); ++i) {
 
-            mTableLayout.addView(row);
+                Button button = new Button(this);
 
+                // Get the floor number from the JSONArray
+                floor = floors.getJSONObject(i);
+                floorNumber = floor.getInt("floorNumber");
+
+                button.setText("Floor Number: " + floorNumber);
+
+                button.setId(i);
+
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getBaseContext(), Parking_Space_Activity.class);
+                        intent.putExtra("floor", floor.toString());
+                        startActivity(intent);
+                    }
+                });
+
+                mLinearLayout.addView(button);
+
+            }
+        } else {
+
+            // Create a TextView to display message if no garages present
+            TextView textView = new TextView(this);
+            textView.setText("There are no floors to display. Please check back later. Thanks!");
+            textView.setTextSize(30);
+            mLinearLayout.addView(textView);
         }
 
-        getGarageInfo();
-
-    }
-
-
-    public void getGarageInfo() throws JSONException {
-        TransitRestClient.get("readings/", null, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                // If the response is JSONObject instead of expected JSONArray
-                System.out.println("Wow, we're here!!!");
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) {
-                // Pull out the first event on the public timeline
-                JSONObject firstEvent = null;
-                try {
-                    firstEvent = (JSONObject) timeline.get(0);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                System.out.println(firstEvent.toString());
-                /*ParkingGarage parkingGarage = gson.fromJson(firstEvent.toString(), ParkingGarage.class);
-                System.out.println("This is the json to java object: " + parkingGarage + "\n");
-
-                String result = null, lhsSpots = null, rhsSpots = null, floors = null;
-                try {
-                    result = firstEvent.getString("garageName");
-                    lhsSpots = firstEvent.getString("lhsSpots");
-                    rhsSpots = firstEvent.getString("rhsSpots");
-                    floors = firstEvent.getString("floors");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } */
-
-                try {
-                    garageHolder = firstEvent.getJSONArray("garages");
-                    System.out.println(garageHolder);
-
-                    JSONObject jsonGarage = garageHolder.getJSONObject(0);
-                    System.out.println(jsonGarage);
-                    JSONArray jsonFloors = jsonGarage.getJSONArray("floors");
-                    System.out.println(jsonFloors);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
 }
