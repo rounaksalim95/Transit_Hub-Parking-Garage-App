@@ -39,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
     // Default value used while extracting id from intent
     private final int DEFAULT_VALUE = -1;
 
+    // Preserves a link to the menu
+    private Menu optionsMenu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,17 +72,26 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Cache the menu
+        optionsMenu = menu;
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
+
+        return super.onCreateOptionsMenu(menu);
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
+        switch (item.getItemId()) {
+            case R.id.refresh:
+                // Get back to the Start activity
+                finish();
+                startActivity(new Intent(this, Start.class));
+                return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }

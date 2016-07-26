@@ -1,5 +1,6 @@
 package com.example.rounaksalim95.transit_hub;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +23,9 @@ public class Start extends AppCompatActivity {
 
     // Holds reference to the LinearLayout inside the ScrollView to add buttons dynamically
     private LinearLayout mLinearLayout;
+
+    // Preserves a link to the menu
+    private Menu optionsMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,18 +148,41 @@ public class Start extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Cache the menu
+        optionsMenu = menu;
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
+
+        return super.onCreateOptionsMenu(menu);
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
+        switch (item.getItemId()) {
+            case R.id.refresh:
+                // Restart the activity
+                finish();
+                startActivity(getIntent());
+                return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
+
+
+/*    public void setRefreshActionButtonState(final boolean refreshing) {
+        if (optionsMenu != null) {
+            final MenuItem refreshItem = optionsMenu.findItem(R.id.refresh);
+            if (refreshItem != null) {
+                if (refreshing) {
+                    refreshItem.setActionView(R.layout.actionbar_intermediate_progress);
+                } else {
+                    refreshItem.setActionView(null);
+                }
+            }
+        }
+    }*/
 }
