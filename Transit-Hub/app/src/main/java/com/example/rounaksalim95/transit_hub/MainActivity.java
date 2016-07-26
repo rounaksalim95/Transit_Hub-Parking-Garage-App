@@ -12,8 +12,6 @@ import android.widget.TextView;
 
 import org.json.*;
 
-import com.loopj.android.http.*;
-
 public class MainActivity extends AppCompatActivity {
 
     private LinearLayout mLinearLayout;
@@ -42,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     // Preserves a link to the menu
     private Menu optionsMenu;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,10 +59,8 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        System.out.println("+++++++++++++++++++++++++++++++" + "\n" + garageHolder + "\n" + "This is the id: "  + id);
-
         try {
-            test();
+            displayFloors();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -97,7 +94,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void test() throws JSONException {
+    /**
+     * Displays buttons for all the floors in the garage
+     * @throws JSONException
+     */
+    public void displayFloors() throws JSONException {
 
         // Get the Json data for the appropriate garage
         garage = garageHolder.getJSONObject(id);

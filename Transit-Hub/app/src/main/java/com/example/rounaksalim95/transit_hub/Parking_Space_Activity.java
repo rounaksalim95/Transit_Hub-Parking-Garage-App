@@ -5,12 +5,12 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.SpannableStringBuilder;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,6 +68,10 @@ public class Parking_Space_Activity extends AppCompatActivity {
     }
 
 
+    /**
+     * Method that displays all the parking slots and their availability status
+     * @throws JSONException
+     */
     private void displayParkingSlots() throws JSONException {
 
         // Get the Json data for the parking slots
@@ -133,17 +137,16 @@ public class Parking_Space_Activity extends AppCompatActivity {
             }
         } else {
 
-            /*// Create a TextView to display message if no garages present
-            TextView textView = new TextView(this);
-            textView.setText("There are no parking spots to display. Please check back later. Thanks!");
-            textView.setTextSize(30);
-            mRelativeLayout.addView(textView);*/
+            // Throw a toast indicating that there are not parking slots on this floor
+            // (if that ever happens)
+            Toast.makeText(this, "Surprisingly there are no parking slots on this floor",
+                    Toast.LENGTH_LONG).show();
         }
     }
 
 
     /**
-     * Se the drawable to the appropriate image bases on the availability of the parking slots
+     * Sets the drawable to the appropriate image bases on the availability of the parking slots
      * @param slot The JSONObject that contains information about the parking slot
      * @return Returns the appropriate drawable
      */

@@ -1,6 +1,5 @@
 package com.example.rounaksalim95.transit_hub;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,8 +23,6 @@ public class Start extends AppCompatActivity {
     // Holds reference to the LinearLayout inside the ScrollView to add buttons dynamically
     private LinearLayout mLinearLayout;
 
-    // Preserves a link to the menu
-    private Menu optionsMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +40,12 @@ public class Start extends AppCompatActivity {
     }
 
 
-    public void test(final JSONArray garageJson) throws JSONException {
+    /**
+     * Method that displays button pertaining to the garages
+     * @param garageJson JSONArray that has all the data about garages
+     * @throws JSONException
+     */
+    public void displayGarages(final JSONArray garageJson) throws JSONException {
 
         JSONObject garage;
 
@@ -103,8 +105,6 @@ public class Start extends AppCompatActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) {
-                // Pull out the first event on the public timeline
-                JSONObject firstEvent = null;
                 JSONArray allEvents = timeline;
 
                 // JSONArray that holds garages
@@ -113,31 +113,10 @@ public class Start extends AppCompatActivity {
                 // JSONArray that has all the garages
                 JSONArray garages = new JSONArray();
 
-                try {
-                    firstEvent = (JSONObject) timeline.get(1);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                System.out.println(allEvents.toString());
-                /*ParkingGarage parkingGarage = gson.fromJson(firstEvent.toString(), ParkingGarage.class);
-                System.out.println("This is the json to java object: " + parkingGarage + "\n");
-
-                String result = null, lhsSpots = null, rhsSpots = null, floors = null;
-                try {
-                    result = firstEvent.getString("garageName");
-                    lhsSpots = firstEvent.getString("lhsSpots");
-                    rhsSpots = firstEvent.getString("rhsSpots");
-                    floors = firstEvent.getString("floors");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } */
-
+                // Store all the JSON data in the garages JSONArray
                 for (int i = 0; i < allEvents.length(); ++i) {
                     try {
                         holder = allEvents.getJSONObject(i).getJSONArray("garages");
-
-                        System.out.println(holder);
 
                         for (int j = 0; j < holder.length(); ++j) {
                             garages.put(holder.get(j));
@@ -150,25 +129,10 @@ public class Start extends AppCompatActivity {
 
                 try {
                     // Call the method that displays the buttons for the garages
-                    test(garages);
+                    displayGarages(garages);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-                /*try {
-                    holder = firstEvent.getJSONArray("garages");
-                    System.out.println(holder);
-
-                    JSONObject jsonGarage = holder.getJSONObject(0);
-                    System.out.println(jsonGarage);
-                    JSONArray jsonFloors = jsonGarage.getJSONArray("floors");
-                    System.out.println(jsonFloors);
-
-                    test(holder);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }*/
             }
         });
     }
@@ -176,9 +140,6 @@ public class Start extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Cache the menu
-        optionsMenu = menu;
-
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
@@ -199,18 +160,4 @@ public class Start extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
-/*    public void setRefreshActionButtonState(final boolean refreshing) {
-        if (optionsMenu != null) {
-            final MenuItem refreshItem = optionsMenu.findItem(R.id.refresh);
-            if (refreshItem != null) {
-                if (refreshing) {
-                    refreshItem.setActionView(R.layout.actionbar_intermediate_progress);
-                } else {
-                    refreshItem.setActionView(null);
-                }
-            }
-        }
-    }*/
 }
