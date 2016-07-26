@@ -1,15 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.rounaksalim95.transit_hub.MainActivity" >
+    tools:context=".MainActivity" >
 
     <item
-        android:id="@+id/firstFloor"
-        android:orderInCategory="100"
-        android:title="Floor 2"
-        app:showAsAction="never"/>
-
-    <item android:id="@+id/secondFloor"
-        android:title="Floor 1"></item>
+        android:id="@+id/refresh"
+        android:title="Refresh"
+        android:icon="@drawable/ic_menu_refresh"
+        app:showAsAction="always"/>
 
 </menu>
