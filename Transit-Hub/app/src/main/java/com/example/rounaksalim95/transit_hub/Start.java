@@ -105,15 +105,21 @@ public class Start extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) {
                 // Pull out the first event on the public timeline
                 JSONObject firstEvent = null;
+                JSONArray allEvents = timeline;
 
+                // JSONArray that holds garages
                 JSONArray holder;
+
+                // JSONArray that has all the garages
+                JSONArray garages = new JSONArray();
+
                 try {
-                    firstEvent = (JSONObject) timeline.get(0);
+                    firstEvent = (JSONObject) timeline.get(1);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                System.out.println(firstEvent.toString());
+                System.out.println(allEvents.toString());
                 /*ParkingGarage parkingGarage = gson.fromJson(firstEvent.toString(), ParkingGarage.class);
                 System.out.println("This is the json to java object: " + parkingGarage + "\n");
 
@@ -127,7 +133,29 @@ public class Start extends AppCompatActivity {
                     e.printStackTrace();
                 } */
 
+                for (int i = 0; i < allEvents.length(); ++i) {
+                    try {
+                        holder = allEvents.getJSONObject(i).getJSONArray("garages");
+
+                        System.out.println(holder);
+
+                        for (int j = 0; j < holder.length(); ++j) {
+                            garages.put(holder.get(j));
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 try {
+                    // Call the method that displays the buttons for the garages
+                    test(garages);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                /*try {
                     holder = firstEvent.getJSONArray("garages");
                     System.out.println(holder);
 
@@ -140,7 +168,7 @@ public class Start extends AppCompatActivity {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                }
+                }*/
             }
         });
     }
