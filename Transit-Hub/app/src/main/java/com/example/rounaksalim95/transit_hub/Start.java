@@ -1,8 +1,10 @@
 package com.example.rounaksalim95.transit_hub;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,9 +14,14 @@ import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -22,6 +29,9 @@ public class Start extends AppCompatActivity {
 
     // Holds reference to the LinearLayout inside the ScrollView to add buttons dynamically
     private LinearLayout mLinearLayout;
+
+    // Reference for WebSocket Client
+    private WebSocketClient mWebSocketClient;
 
 
     @Override
@@ -31,6 +41,13 @@ public class Start extends AppCompatActivity {
 
         // Cache the LinearLayout
         mLinearLayout = (LinearLayout) findViewById(R.id.garageView);
+
+        // Make the WebSocket connection
+        try {
+            connectWebSocket();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
 
         try {
             getGarageInfo();
@@ -135,6 +152,43 @@ public class Start extends AppCompatActivity {
                 }
             }
         });
+    }
+
+
+    public void connectWebSocket() throws URISyntaxException {
+        URI uri;
+        // Connect to the local host at port 9000
+        uri = new URI("ws://10.0.2.2:9000");
+
+        mWebSocketClient = new WebSocketClient(uri) {
+            @Override
+            public void onOpen(ServerHandshake handshakedata) {
+                Log.i("WebSocket", "Opened");
+                mWebSocketClient.send("Hello from " + Build.MANUFACTURER + " " + Build.MODEL);
+            }
+
+            @Override
+            public void onMessage(String message) {
+                runOnUiThread(() -> {
+                    // Create a TextView to display message if no garages present
+                    TextView textView = new TextView(Start.this);
+                    textView.setText(message);
+                    textView.setTextSize(30);
+                    mLinearLayout.addView(textView);
+                });
+            }
+
+            @Override
+            public void onClose(int code, String reason, boolean remote) {
+                Log.i("WebSocket", "Closed" + reason);
+            }
+
+            @Override
+            public void onError(Exception ex) {
+                Log.i("WebSocket", "Error" + ex.getMessage());
+            }
+        };
+        mWebSocketClient.connect();
     }
 
 
