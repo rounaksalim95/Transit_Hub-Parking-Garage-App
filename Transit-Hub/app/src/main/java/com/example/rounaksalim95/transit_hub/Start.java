@@ -113,7 +113,7 @@ public class Start extends AppCompatActivity {
      */
     public void getGarageInfo() throws JSONException {
 
-        TransitRestClient.get("readings/", null, new JsonHttpResponseHandler() {
+        TransitRestClient.get("api/devices/ch1/ParkingData", null, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 // If the response is JSONObject instead of expected JSONArray
@@ -170,11 +170,7 @@ public class Start extends AppCompatActivity {
             @Override
             public void onMessage(String message) {
                 runOnUiThread(() -> {
-                    // Create a TextView to display message if no garages present
-                    TextView textView = new TextView(Start.this);
-                    textView.setText(message);
-                    textView.setTextSize(30);
-                    mLinearLayout.addView(textView);
+                    // Have to figure out what to do here 
                 });
             }
 
