@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 public class Parking_Space_Activity extends AppCompatActivity {
 
     private TableLayout mTableLayout;
@@ -210,5 +211,15 @@ public class Parking_Space_Activity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    /**
+     * Parses JSON data so that parking spots can be displayed
+     * @param data JSON data about the parking garages
+     * @return Returns processed JSON data
+     */
+    /*private JSONObject parseFloors(JSONArray data) {
+        JSONArray holder =
+    }*/
 
 }

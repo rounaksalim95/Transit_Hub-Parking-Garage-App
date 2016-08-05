@@ -87,7 +87,7 @@ public class Start extends AppCompatActivity {
      * @param garageJson JSONArray that has all the data about garages
      * @throws JSONException
      */
-    public void displayGarages(final JSONArray garageJson) throws JSONException {
+    public void displayGarages(final JSONArray garageJson, JSONArray data) throws JSONException {
 
         JSONObject garage;
 
@@ -112,7 +112,7 @@ public class Start extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                        intent.putExtra("garages", garageJson.toString());
+                        intent.putExtra("garages", data.toString());
                         intent.putExtra("id", view.getId());
                         startActivity(intent);
                     }
@@ -152,7 +152,7 @@ public class Start extends AppCompatActivity {
 
                 try {
                     // Call the method that displays the buttons for the garages
-                    displayGarages(garages);
+                    displayGarages(garages, timeline);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -161,7 +161,12 @@ public class Start extends AppCompatActivity {
     }
 
 
-    private JSONArray parseJson(JSONArray data) {
+    /**
+     * Processes data from all documents and puts it in one JSONArray
+     * @param data JSON data about parking garages
+     * @return Returns JSONArray containing garage data from all documents
+     */
+    public static JSONArray parseJson(JSONArray data) {
         JSONArray allEvents = data;
 
         // JSONArray that holds garages

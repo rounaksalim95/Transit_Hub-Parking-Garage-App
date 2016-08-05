@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        garageHolder = parseGarageData(garageHolder);
+
         try {
             displayFloors();
         } catch (JSONException e) {
@@ -172,6 +174,16 @@ public class MainActivity extends AppCompatActivity {
             mLinearLayout.addView(textView);
         }
 
+    }
+
+
+    /**
+     * Parses JSON data received so that floors can be displayed
+     * @param data JSONArray that has the data from the database
+     * @return Returns processed JSON data
+     */
+    private JSONArray parseGarageData(JSONArray data) {
+        return Start.parseJson(data);
     }
 
 }
