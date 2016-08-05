@@ -142,32 +142,13 @@ public class Start extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 // If the response is JSONObject instead of expected JSONArray
-                System.out.println("Wow, we're here!!!");
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) {
-                JSONArray allEvents = timeline;
 
-                // JSONArray that holds garages
-                JSONArray holder;
-
-                // JSONArray that has all the garages
-                JSONArray garages = new JSONArray();
-
-                // Store all the JSON data in the garages JSONArray
-                for (int i = 0; i < allEvents.length(); ++i) {
-                    try {
-                        holder = allEvents.getJSONObject(i).getJSONArray("garages");
-
-                        for (int j = 0; j < holder.length(); ++j) {
-                            garages.put(holder.get(j));
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+                // Parse the JSON data
+                JSONArray garages = parseJson(timeline);
 
                 try {
                     // Call the method that displays the buttons for the garages
@@ -177,6 +158,33 @@ public class Start extends AppCompatActivity {
                 }
             }
         });
+    }
+
+
+    private JSONArray parseJson(JSONArray data) {
+        JSONArray allEvents = data;
+
+        // JSONArray that holds garages
+        JSONArray holder;
+
+        // JSONArray that has all the garages
+        JSONArray garages = new JSONArray();
+
+        // Store all the JSON data in the garages JSONArray
+        for (int i = 0; i < allEvents.length(); ++i) {
+            try {
+                holder = allEvents.getJSONObject(i).getJSONArray("garages");
+
+                for (int j = 0; j < holder.length(); ++j) {
+                    garages.put(holder.get(j));
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return garages;
     }
 
 
@@ -197,8 +205,12 @@ public class Start extends AppCompatActivity {
                 runOnUiThread(() -> {
                     // Testing
                     SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
-                    // System.out.println(sp.getBoolean());
-                    System.out.println("RECEIVED DATA FROM WEBSOCKET");
+                    JSONArray holder = null;
+                    try {
+                        holder = new JSONArray(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 });
             }
 
