@@ -1,6 +1,7 @@
 package com.example.rounaksalim95.transit_hub;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -64,6 +65,30 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Store our shared preferences
+        SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(this.getLocalClassName(), true);
+        editor.apply();
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        // Store our shared preferences
+        SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(this.getLocalClassName(), false);
+        editor.apply();
     }
 
 

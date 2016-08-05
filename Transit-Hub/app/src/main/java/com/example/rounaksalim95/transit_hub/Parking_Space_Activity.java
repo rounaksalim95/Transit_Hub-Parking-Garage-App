@@ -1,6 +1,7 @@
 package com.example.rounaksalim95.transit_hub;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -36,6 +37,7 @@ public class Parking_Space_Activity extends AppCompatActivity {
     // Preserves a link to the menu
     private Menu optionsMenu;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +67,30 @@ public class Parking_Space_Activity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Store our shared preferences
+        SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(this.getLocalClassName(), true);
+        editor.apply();
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        // Store our shared preferences
+        SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(this.getLocalClassName(), false);
+        editor.apply();
     }
 
 
