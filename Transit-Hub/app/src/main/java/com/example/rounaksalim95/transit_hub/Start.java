@@ -208,13 +208,22 @@ public class Start extends AppCompatActivity {
             @Override
             public void onMessage(String message) {
                 runOnUiThread(() -> {
-                    // Testing
-                    SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
                     JSONArray holder = null;
                     try {
                         holder = new JSONArray(message);
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    }
+                    Intent intent;
+                    SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
+                    if (sp.getBoolean("Start", false)) {
+                        intent = new Intent(getApplicationContext(), Start.class);
+                        startActivity(intent);
+                    } else  {
+                        intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.putExtra("garages", holder.toString());
+                        //intent.putExtra("id", view.getId());
+                        startActivity(intent);
                     }
                 });
             }
