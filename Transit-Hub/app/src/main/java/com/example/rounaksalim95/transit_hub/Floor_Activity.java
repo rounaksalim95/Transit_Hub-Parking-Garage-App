@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import org.json.*;
 
-public class MainActivity extends AppCompatActivity {
+public class Floor_Activity extends AppCompatActivity {
 
     private LinearLayout mLinearLayout;
 
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_floor);
 
         mLinearLayout = (LinearLayout) findViewById(R.id.floorView);
         Intent intent = getIntent();

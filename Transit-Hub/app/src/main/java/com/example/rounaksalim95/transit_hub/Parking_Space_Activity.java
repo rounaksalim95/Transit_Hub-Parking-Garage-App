@@ -178,7 +178,7 @@ public class Parking_Space_Activity extends AppCompatActivity {
      * @return Returns the appropriate drawable
      */
     private Drawable getDrawable(JSONObject slot) throws JSONException {
-        if (slot.getString("Availability").equals("Available")) {
+        if (slot.getString("Availability").equals("true")) {
             return available;
         } else {
             return unavailable;

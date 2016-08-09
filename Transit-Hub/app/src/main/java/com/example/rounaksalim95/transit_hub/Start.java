@@ -111,7 +111,7 @@ public class Start extends AppCompatActivity {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                        Intent intent = new Intent(getBaseContext(), Floor_Activity.class);
                         intent.putExtra("garages", data.toString());
                         intent.putExtra("id", view.getId());
                         startActivity(intent);
@@ -178,12 +178,7 @@ public class Start extends AppCompatActivity {
         // Store all the JSON data in the garages JSONArray
         for (int i = 0; i < allEvents.length(); ++i) {
             try {
-                holder = allEvents.getJSONObject(i).getJSONArray("garages");
-
-                for (int j = 0; j < holder.length(); ++j) {
-                    garages.put(holder.get(j));
-                }
-
+                garages.put(allEvents.get(i));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -220,7 +215,7 @@ public class Start extends AppCompatActivity {
                         intent = new Intent(getApplicationContext(), Start.class);
                         startActivity(intent);
                     } else  {
-                        intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent = new Intent(getApplicationContext(), Floor_Activity.class);
                         intent.putExtra("garages", holder.toString());
                         //intent.putExtra("id", view.getId());
                         startActivity(intent);
