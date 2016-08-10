@@ -43,6 +43,13 @@ public class Start extends AppCompatActivity {
         // Cache the LinearLayout
         mLinearLayout = (LinearLayout) findViewById(R.id.garageView);
 
+        // Store our shared preferences
+        SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(this.getLocalClassName(), true);
+        System.out.println(this.getLocalClassName());
+        editor.apply();
+
         // Make the WebSocket connection
         try {
             connectWebSocket();
@@ -61,12 +68,6 @@ public class Start extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        // Store our shared preferences
-        SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putBoolean(this.getLocalClassName(), true);
-        editor.apply();
     }
 
 
@@ -213,12 +214,20 @@ public class Start extends AppCompatActivity {
                     SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
                     if (sp.getBoolean("Start", false)) {
                         intent = new Intent(getApplicationContext(), Start.class);
+                        System.out.println("Going to start new Start activity");
                         startActivity(intent);
-                    } else  {
+                    } else if (sp.getBoolean("Floor_Activity", false)) {
+                        System.out.println(sp.getBoolean("Floor_Activity", false));
+                        int id = sp.getInt("garageID", -1);
                         intent = new Intent(getApplicationContext(), Floor_Activity.class);
                         intent.putExtra("garages", holder.toString());
+                        intent.putExtra("id", id);
+                        System.out.println("Going to start new Floor_Activity activity");
                         //intent.putExtra("id", view.getId());
                         startActivity(intent);
+                    } else {
+                        intent = new Intent(getApplicationContext(), Parking_Space_Activity.class);
+                        // -------------------------------------------------------------------------
                     }
                 });
             }

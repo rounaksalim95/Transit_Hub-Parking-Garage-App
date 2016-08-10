@@ -13,12 +13,14 @@ import android.widget.TextView;
 
 import org.json.*;
 
+import java.util.HashMap;
+
 public class Floor_Activity extends AppCompatActivity {
 
     private LinearLayout mLinearLayout;
 
     // JSONArray that holds the different garage Json objects
-    private JSONArray garageHolder;
+    private JSONArray garageHolder,data;
 
     // JSONObject that holds the Json data for the appropriate garage
     private JSONObject garage;
@@ -55,12 +57,12 @@ public class Floor_Activity extends AppCompatActivity {
 
         // Get the JsonArray String data present in the intent
         try {
-            garageHolder = new JSONArray(intent.getStringExtra("garages"));
+            data = new JSONArray(intent.getStringExtra("garages"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        garageHolder = parseGarageData(garageHolder);
+        garageHolder = parseGarageData(data);
 
         try {
             displayFloors();
@@ -78,6 +80,7 @@ public class Floor_Activity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean(this.getLocalClassName(), true);
+        editor.putInt("garageID", id);
         editor.apply();
     }
 
@@ -134,30 +137,30 @@ public class Floor_Activity extends AppCompatActivity {
 
         int floorNumber;
 
+        // Array used to map object index to floor number (for sorting floors)
+        int translation[] = new int[floors.length()];
+
         if (floors != null) {
 
-            // Loop through all the garages in the database and display buttons for them
+            // Mapping object indices to floor numbers
             for (int i = 0; i < floors.length(); ++i) {
+                floorNumber = floors.getJSONObject(i).getInt("floorNumber");
+                translation[i] = floorNumber;
+            }
 
+            // Setup UI 
+            for (int i = 0; i < floors.length(); ++i) {
                 Button button = new Button(this);
+                button.setText("Floor Number: " + (i + 1));
 
-                // Get the floor number from the JSONArray
-                floor = floors.getJSONObject(i);
-                floorNumber = floor.getInt("floorNumber");
-
-                button.setText("Floor Number: " + floorNumber);
-
-                button.setId(i);
+                button.setId(translation[i]);
 
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(getBaseContext(), Parking_Space_Activity.class);
-                        try {
-                            intent.putExtra("floor", floors.getJSONObject(view.getId()).toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        intent.putExtra("data", data.toString());
+                        intent.putExtra("floorID", view.getId());
                         startActivity(intent);
                     }
                 });
