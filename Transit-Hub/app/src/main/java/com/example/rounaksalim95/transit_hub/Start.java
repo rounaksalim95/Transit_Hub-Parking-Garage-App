@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -25,6 +26,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.impl.client.DefaultUserTokenHandler;
 
 public class Start extends AppCompatActivity {
 
@@ -33,6 +35,9 @@ public class Start extends AppCompatActivity {
 
     // Reference for WebSocket Client
     private WebSocketClient mWebSocketClient;
+
+    // Default value for SharedPreferences int
+    private final int DEFAULT_VALUE = -1;
 
 
     @Override
@@ -216,6 +221,7 @@ public class Start extends AppCompatActivity {
                         intent = new Intent(getApplicationContext(), Start.class);
                         System.out.println("Going to start new Start activity");
                         startActivity(intent);
+
                     } else if (sp.getBoolean("Floor_Activity", false)) {
                         System.out.println(sp.getBoolean("Floor_Activity", false));
                         int id = sp.getInt("garageID", -1);
@@ -223,11 +229,19 @@ public class Start extends AppCompatActivity {
                         intent.putExtra("garages", holder.toString());
                         intent.putExtra("id", id);
                         System.out.println("Going to start new Floor_Activity activity");
-                        //intent.putExtra("id", view.getId());
                         startActivity(intent);
+
                     } else {
                         intent = new Intent(getApplicationContext(), Parking_Space_Activity.class);
-                        // -------------------------------------------------------------------------
+                        int garageID = sp.getInt("garageID", DEFAULT_VALUE);
+                        int floorID = sp.getInt("floorID", DEFAULT_VALUE);
+                        intent.putExtra("garageID", garageID);
+                        intent.putExtra("floorID", floorID);
+                        intent.putExtra("data", holder.toString());
+                        startActivity(intent);
+                        Toast.makeText(getApplicationContext(),
+                                "Parking information has been updated!", Toast.LENGTH_LONG).show();
+
                     }
                 });
             }
