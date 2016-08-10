@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import org.json.*;
 
-import java.util.HashMap;
 
 public class Floor_Activity extends AppCompatActivity {
 
@@ -138,22 +137,23 @@ public class Floor_Activity extends AppCompatActivity {
         int floorNumber;
 
         // Array used to map object index to floor number (for sorting floors)
-        int translation[] = new int[floors.length()];
+        int translation[] = new int[floors.length() + 1];
 
         if (floors != null) {
 
-            // Mapping object indices to floor numbers
+            // Mapping floor number to corresponding object indices
             for (int i = 0; i < floors.length(); ++i) {
                 floorNumber = floors.getJSONObject(i).getInt("floorNumber");
-                translation[i] = floorNumber;
+                translation[floorNumber] = i;
             }
 
-            // Setup UI 
+            // Setup UI
             for (int i = 0; i < floors.length(); ++i) {
                 Button button = new Button(this);
                 button.setText("Floor Number: " + (i + 1));
 
-                button.setId(translation[i]);
+                // Get the corresponding object index for this floor
+                button.setId(translation[i + 1]);
 
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -161,6 +161,7 @@ public class Floor_Activity extends AppCompatActivity {
                         Intent intent = new Intent(getBaseContext(), Parking_Space_Activity.class);
                         intent.putExtra("data", data.toString());
                         intent.putExtra("floorID", view.getId());
+                        intent.putExtra("garageID", id);
                         startActivity(intent);
                     }
                 });
@@ -185,7 +186,7 @@ public class Floor_Activity extends AppCompatActivity {
      * @param data JSONArray that has the data from the database
      * @return Returns processed JSON data
      */
-    private JSONArray parseGarageData(JSONArray data) {
+    public static JSONArray parseGarageData(JSONArray data) {
         return Start.parseJson(data);
     }
 

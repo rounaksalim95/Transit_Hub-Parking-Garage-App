@@ -22,10 +22,16 @@ public class Parking_Space_Activity extends AppCompatActivity {
 
     private TableLayout mTableLayout;
 
-    // JSONObject that holds the Json data for the floor
+    // JSONObject that holds the JSON data for the garage
+    private JSONObject garage;
+
+    // JSONObject that holds the JSON data for the floor
     private JSONObject floor;
 
-    // JSONArray that holds the Json data for the parking slots on the floor
+    //JSONArray that holds all the parking data
+    private JSONArray data;
+
+    // JSONArray that holds the JSON data for the parking slots on the floor
     private JSONArray parkingSlots;
 
     // Number of parking slots on the floor
@@ -34,6 +40,12 @@ public class Parking_Space_Activity extends AppCompatActivity {
     // Drawables set to available and unavailable images
     private Drawable available;
     private Drawable unavailable;
+
+    // Integers that hold the floorID and garageID received from Floor_Activity
+    private int floorID, garageID;
+
+    // Default value used while extracting id from intent
+    private final int DEFAULT_VALUE = -1;
 
     // Preserves a link to the menu
     private Menu optionsMenu;
@@ -58,10 +70,15 @@ public class Parking_Space_Activity extends AppCompatActivity {
         unavailable.setBounds(0, 0, 135, 135);
 
         try {
-            floor = new JSONObject(intent.getStringExtra("floor"));
+            /*floor = new JSONObject(intent.getStringExtra("floor"));*/
+            data = new JSONArray(intent.getStringExtra("data"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        // Extract the floor and garage ID from the intent
+        floorID = intent.getIntExtra("floorID", DEFAULT_VALUE);
+        garageID = intent.getIntExtra("garageID", DEFAULT_VALUE);
 
         try {
             displayParkingSlots();
@@ -79,6 +96,8 @@ public class Parking_Space_Activity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean(this.getLocalClassName(), true);
+        editor.putInt("floorID", floorID);
+        editor.putInt("garageID", garageID);
         editor.apply();
     }
 
@@ -101,7 +120,18 @@ public class Parking_Space_Activity extends AppCompatActivity {
      */
     private void displayParkingSlots() throws JSONException {
 
-        // Get the Json data for the parking slots
+        // Parse the raw JSON data to extract garages
+        data = Floor_Activity.parseGarageData(data);
+
+        // Get the JSON data for the required garage
+        garage = data.getJSONObject(garageID);
+
+        // Get the JSON data for the required floor
+        floor = garage.getJSONArray("floors").getJSONObject(floorID);
+
+        // -----------------------------------------------------------------------------------------
+
+        // Get the JSON data for the parking slots
         parkingSlots = floor.getJSONArray("parkingSpots");
 
         // Place holders for the text that has to go into the TextViews
