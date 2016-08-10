@@ -137,9 +137,21 @@ public class Parking_Space_Activity extends AppCompatActivity {
         // Place holders for the text that has to go into the TextViews
         String lhsString, rhsString;
 
+        // Holds parkingSlotID
+        int parkingSlotID;
+
+        // Array used for mapping parkingSlotID to object index
+        int translation[] = new int[parkingSlots.length() + 1];
+
         if (parkingSlots != null) {
 
-            // Loop through all the garages in the database and display buttons for them
+            // Loop through slots and map parkingSlotID to corresponding object index
+            for (int i = 0; i < parkingSlots.length(); ++i) {
+                parkingSlotID = parkingSlots.getJSONObject(i).getInt("parkingSpotID");
+                translation[parkingSlotID] = i;
+            }
+
+            // Loop through all the parking slots and display their availability
             numberOfSlots = parkingSlots.length();
             for (int i = 1; i <= numberOfSlots; i+=2) {
 
@@ -169,7 +181,7 @@ public class Parking_Space_Activity extends AppCompatActivity {
 
                     // Set the drawable to the right of the text
                     lhs.setCompoundDrawables(null, null,
-                            getDrawable(parkingSlots.getJSONObject(i - 1)), null);
+                            getDrawable(parkingSlots.getJSONObject(translation[i])), null);
 
                 } else {
                     lhsString = "Parking spot " + i + " : ";
@@ -179,10 +191,10 @@ public class Parking_Space_Activity extends AppCompatActivity {
 
                     // Set the drawable to the right of the text
                     lhs.setCompoundDrawables(null, null,
-                            getDrawable(parkingSlots.getJSONObject(i - 1)), null);
+                            getDrawable(parkingSlots.getJSONObject(translation[i])), null);
 
                     rhs.setCompoundDrawables(null, null,
-                            getDrawable(parkingSlots.getJSONObject(i)), null);
+                            getDrawable(parkingSlots.getJSONObject(translation[i + 1])), null);
                 }
 
                 // Add the views to the row
