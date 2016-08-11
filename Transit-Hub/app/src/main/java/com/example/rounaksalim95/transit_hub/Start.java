@@ -234,7 +234,13 @@ public class Start extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    Intent intent;
+                    Intent intent = new Intent(getApplicationContext(), Start.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    Toast.makeText(getApplicationContext(),
+                            "Parking information has been updated!", Toast.LENGTH_SHORT).show();
+                    /*Intent intent;
                     SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
                     SharedPreferences.Editor editor = sp.edit();
                     if (sp.getBoolean("Start", false)) {
@@ -278,7 +284,7 @@ public class Start extends AppCompatActivity {
 
                     } else {
                         System.out.println("NOTHING WAS TRUE?");
-                    }
+                    }*/
                 });
             }
 
