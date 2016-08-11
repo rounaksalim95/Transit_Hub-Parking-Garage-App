@@ -248,6 +248,7 @@ public class Start extends AppCompatActivity {
                     } else if (sp.getBoolean("Floor_Activity", false)) {
                         System.out.println(sp.getBoolean("Floor_Activity", false));
                         int id = sp.getInt("garageID", DEFAULT_VALUE);
+                        String garageName = sp.getString("garageName", "DEFAULT");
                         intent = new Intent(getApplicationContext(), Floor_Activity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         intent.putExtra("garages", holder.toString());
@@ -266,6 +267,7 @@ public class Start extends AppCompatActivity {
                         int garageID = sp.getInt("garageID", DEFAULT_VALUE);
                         int floorID = sp.getInt("floorID", DEFAULT_VALUE);
                         int floorName = sp.getInt("floorName", DEFAULT_VALUE);
+                        String garageName = sp.getString("garageName", "DEFAULT");
                         intent.putExtra("garageID", garageID);
                         intent.putExtra("floorID", floorID);
                         intent.putExtra("data", holder.toString());
