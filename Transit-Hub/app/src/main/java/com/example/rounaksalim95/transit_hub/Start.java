@@ -73,7 +73,7 @@ public class Start extends AppCompatActivity {
         // Store our shared preferences
         SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putBoolean(this.getLocalClassName(), true);
+        editor.putBoolean(getLocalClassName(), true);
         editor.putBoolean("Floor_Activity", false);
         editor.putBoolean("Parking_Space_Activity", false);
         System.out.println(this.getLocalClassName());
@@ -135,8 +135,8 @@ public class Start extends AppCompatActivity {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(getBaseContext(), Floor_Activity.class);/*
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
+                        Intent intent = new Intent(getBaseContext(), Floor_Activity.class);
+                        /*intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
                         intent.putExtra("garages", data.toString());
                         intent.putExtra("garageName", view.getTag().toString());
                         startActivity(intent);
@@ -325,5 +325,12 @@ public class Start extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finishAffinity();
     }
 }
