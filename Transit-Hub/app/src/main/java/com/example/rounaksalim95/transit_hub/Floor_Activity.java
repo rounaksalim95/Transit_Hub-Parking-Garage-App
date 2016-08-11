@@ -151,18 +151,7 @@ public class Floor_Activity extends AppCompatActivity {
 
         floors = garage.getJSONArray("floors");
 
-        int floorNumber;
-
-        // Array used to map object index to floor number (for sorting floors)
-        int translation[] = new int[floors.length() + 1];
-
         if (floors != null) {
-
-            // Mapping floor number to corresponding object indices
-            for (floorName = 0; floorName < floors.length(); ++floorName) {
-                floorNumber = floors.getJSONObject(floorName).getInt("floorNumber");
-                translation[floorNumber] = floorName;
-            }
 
             // Setup UI
             for (int i = 0; i < floors.length(); ++i) {
