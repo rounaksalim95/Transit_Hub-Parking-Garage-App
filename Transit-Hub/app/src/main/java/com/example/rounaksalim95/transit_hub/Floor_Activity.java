@@ -30,8 +30,8 @@ public class Floor_Activity extends AppCompatActivity {
     // JSONObject that holds each individual floor
     private JSONObject floor;
 
-    // Name of the garage
-    private String garageName;
+    // Name of the garage and floor
+    private String garageName, floorName;
 
     // Id of the garage
     private int id;
@@ -81,6 +81,8 @@ public class Floor_Activity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean(this.getLocalClassName(), true);
+        editor.putBoolean("Start", false);
+        editor.putBoolean("Parking_Space_Activity", false);
         editor.putInt("garageID", id);
         editor.putString("garageName", garageName);
         editor.apply();
@@ -89,7 +91,21 @@ public class Floor_Activity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
+        System.out.println("ONSTOP FOR FLOOR HAS BEEN CALLED");
         super.onStop();
+
+        // Store our shared preferences
+        /*SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(this.getLocalClassName(), false);
+        editor.apply();*/
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        System.out.println("ONDESTROY FOR FLOOR HAS BEEN CALLED");
+        super.onDestroy();
 
         // Store our shared preferences
         SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
@@ -97,7 +113,6 @@ public class Floor_Activity extends AppCompatActivity {
         editor.putBoolean(this.getLocalClassName(), false);
         editor.apply();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -154,6 +169,9 @@ public class Floor_Activity extends AppCompatActivity {
             for (int i = 0; i < floors.length(); ++i) {
                 Button button = new Button(this);
                 button.setText("Floor Number: " + (i + 1));
+
+                // Get the name / number of the floor
+                
 
                 // Get the corresponding object index for this floor
                 button.setId(translation[i + 1]);

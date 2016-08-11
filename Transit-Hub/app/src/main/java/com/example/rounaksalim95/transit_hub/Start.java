@@ -51,13 +51,6 @@ public class Start extends AppCompatActivity {
         // Cache the LinearLayout
         mLinearLayout = (LinearLayout) findViewById(R.id.garageView);
 
-        // Store our shared preferences
-        SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putBoolean(this.getLocalClassName(), true);
-        System.out.println(this.getLocalClassName());
-        editor.apply();
-
         // Make the WebSocket connection
         try {
             connectWebSocket();
@@ -76,6 +69,15 @@ public class Start extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        // Store our shared preferences
+        SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(this.getLocalClassName(), true);
+        editor.putBoolean("Floor_Activity", false);
+        editor.putBoolean("Parking_Space_Activity", false);
+        System.out.println(this.getLocalClassName());
+        editor.apply();
     }
 
 
@@ -83,13 +85,24 @@ public class Start extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
+        /*// Store our shared preferences
+        SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(this.getLocalClassName(), false);
+        editor.apply();*/
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
         // Store our shared preferences
         SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean(this.getLocalClassName(), false);
         editor.apply();
     }
-
 
     /**
      * Method that displays button pertaining to the garages
@@ -219,6 +232,7 @@ public class Start extends AppCompatActivity {
                     }
                     Intent intent;
                     SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
                     if (sp.getBoolean("Start", false)) {
                         intent = new Intent(getApplicationContext(), Start.class);
                         System.out.println("Going to start new Start activity");
@@ -232,19 +246,24 @@ public class Start extends AppCompatActivity {
                         intent.putExtra("id", id);
                         intent.putExtra("garageName", garageName);
                         System.out.println("Going to start new Floor_Activity activity");
+                        // Set SharedPreference to true
+                        editor.putBoolean("Floor_Activity", true);
                         startActivity(intent);
 
-                    } else {
+                    } else if (sp.getBoolean("Parking_Space_Activity", false)) {
                         intent = new Intent(getApplicationContext(), Parking_Space_Activity.class);
                         int garageID = sp.getInt("garageID", DEFAULT_VALUE);
                         int floorID = sp.getInt("floorID", DEFAULT_VALUE);
                         intent.putExtra("garageID", garageID);
                         intent.putExtra("floorID", floorID);
                         intent.putExtra("data", holder.toString());
+                        System.out.println("Going to start new Parking_Space_Activity activity");
                         startActivity(intent);
                         Toast.makeText(getApplicationContext(),
                                 "Parking information has been updated!", Toast.LENGTH_LONG).show();
 
+                    } else {
+                        System.out.println("NOTHING WAS TRUE?");
                     }
                 });
             }

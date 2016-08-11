@@ -96,6 +96,8 @@ public class Parking_Space_Activity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean(this.getLocalClassName(), true);
+        editor.putBoolean("Start", false);
+        editor.putBoolean("Floor_Activity", false);
         editor.putInt("floorID", floorID);
         editor.putInt("garageID", garageID);
         editor.apply();
@@ -106,13 +108,24 @@ public class Parking_Space_Activity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
+        /*// Store our shared preferences
+        SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(this.getLocalClassName(), false);
+        editor.apply();*/
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
         // Store our shared preferences
         SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean(this.getLocalClassName(), false);
         editor.apply();
     }
-
 
     /**
      * Method that displays all the parking slots and their availability status
