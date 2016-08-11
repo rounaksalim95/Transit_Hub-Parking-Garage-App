@@ -44,6 +44,12 @@ public class Parking_Space_Activity extends AppCompatActivity {
     // Integers that hold the floorID and garageID received from Floor_Activity
     private int floorID, garageID;
 
+    // Holds garage name
+    private String garageName;
+
+    // Holds floor name (number)
+    private int floorName;
+
     // Default value used while extracting id from intent
     private final int DEFAULT_VALUE = -1;
 
@@ -76,9 +82,9 @@ public class Parking_Space_Activity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        // Extract the floor and garage ID from the intent
-        floorID = intent.getIntExtra("floorID", DEFAULT_VALUE);
-        garageID = intent.getIntExtra("garageID", DEFAULT_VALUE);
+        // Extract the garage and floor names
+        garageName = intent.getStringExtra("garageName");
+        floorName = intent.getIntExtra("floorName", DEFAULT_VALUE);
 
         try {
             displayParkingSlots();
@@ -98,8 +104,8 @@ public class Parking_Space_Activity extends AppCompatActivity {
         editor.putBoolean(this.getLocalClassName(), true);
         editor.putBoolean("Start", false);
         editor.putBoolean("Floor_Activity", false);
-        editor.putInt("floorID", floorID);
-        editor.putInt("garageID", garageID);
+        editor.putString("garageName", garageName);
+        editor.putInt("floorName", floorName);
         editor.apply();
     }
 
@@ -136,13 +142,11 @@ public class Parking_Space_Activity extends AppCompatActivity {
         // Parse the raw JSON data to extract garages
         data = Floor_Activity.parseGarageData(data);
 
-        // Get the JSON data for the required garage
-        garage = data.getJSONObject(garageID);
+        // Get the JSON data for the appropriate garage
+        garage = Floor_Activity.getCorrectGarage(data, garageName);
 
-        // Get the JSON data for the required floor
-        floor = garage.getJSONArray("floors").getJSONObject(floorID);
-
-        // -----------------------------------------------------------------------------------------
+        // Get the JSON data for the appropriate floor
+        floor = getCorrectFloor(garage.getJSONArray("floors"));
 
         // Get the JSON data for the parking slots
         parkingSlots = floor.getJSONArray("parkingSpots");
@@ -228,6 +232,21 @@ public class Parking_Space_Activity extends AppCompatActivity {
 
 
     /**
+     * Gets the correct floor matching by name
+     * @param floors JSONArray containing floor JSONObjects
+     * @return JSONObject of appropriate floor
+     */
+    private JSONObject getCorrectFloor(JSONArray floors) throws JSONException {
+        for (int i = 0; i < floors.length(); ++i) {
+            if (floors.getJSONObject(i).getInt("floorNumber") == floorName) {
+                return floors.getJSONObject(i);
+            }
+        }
+        return null;
+    }
+
+
+    /**
      * Sets the drawable to the appropriate image bases on the availability of the parking slots
      * @param slot The JSONObject that contains information about the parking slot
      * @return Returns the appropriate drawable
@@ -268,13 +287,12 @@ public class Parking_Space_Activity extends AppCompatActivity {
     }
 
 
-    /**
-     * Parses JSON data so that parking spots can be displayed
-     * @param data JSON data about the parking garages
-     * @return Returns processed JSON data
-     */
-    /*private JSONObject parseFloors(JSONArray data) {
-        JSONArray holder =
-    }*/
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this, Floor_Activity.class);
+        intent.putExtra("garageName", garageName);
+        intent.putExtra("garages", data.toString());
+        startActivity(intent);
+    }
 }

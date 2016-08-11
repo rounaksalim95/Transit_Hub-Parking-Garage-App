@@ -124,7 +124,11 @@ public class Start extends AppCompatActivity {
                 garage = garageJson.getJSONObject(i);
                 garageName = garage.getString("garageName");
 
+                System.out.println("THIS IS THE GARAGE NAME : " + garageName);
+
                 button.setText(garageName);
+
+                button.setTag(garageName);
 
                 button.setId(i);
 
@@ -132,9 +136,9 @@ public class Start extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(getBaseContext(), Floor_Activity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         intent.putExtra("garages", data.toString());
-                        intent.putExtra("id", view.getId());
-                        intent.putExtra("garageName", garageName);
+                        intent.putExtra("garageName", view.getTag().toString());
                         startActivity(intent);
                     }
                 });
@@ -235,13 +239,17 @@ public class Start extends AppCompatActivity {
                     SharedPreferences.Editor editor = sp.edit();
                     if (sp.getBoolean("Start", false)) {
                         intent = new Intent(getApplicationContext(), Start.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         System.out.println("Going to start new Start activity");
                         startActivity(intent);
+                        Toast.makeText(getApplicationContext(),
+                                "Parking information has been updated!", Toast.LENGTH_SHORT).show();
 
                     } else if (sp.getBoolean("Floor_Activity", false)) {
                         System.out.println(sp.getBoolean("Floor_Activity", false));
-                        int id = sp.getInt("garageID", -1);
+                        int id = sp.getInt("garageID", DEFAULT_VALUE);
                         intent = new Intent(getApplicationContext(), Floor_Activity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         intent.putExtra("garages", holder.toString());
                         intent.putExtra("id", id);
                         intent.putExtra("garageName", garageName);
@@ -249,18 +257,24 @@ public class Start extends AppCompatActivity {
                         // Set SharedPreference to true
                         editor.putBoolean("Floor_Activity", true);
                         startActivity(intent);
+                        Toast.makeText(getApplicationContext(),
+                                "Parking information has been updated!", Toast.LENGTH_SHORT).show();
 
                     } else if (sp.getBoolean("Parking_Space_Activity", false)) {
                         intent = new Intent(getApplicationContext(), Parking_Space_Activity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         int garageID = sp.getInt("garageID", DEFAULT_VALUE);
                         int floorID = sp.getInt("floorID", DEFAULT_VALUE);
+                        int floorName = sp.getInt("floorName", DEFAULT_VALUE);
                         intent.putExtra("garageID", garageID);
                         intent.putExtra("floorID", floorID);
                         intent.putExtra("data", holder.toString());
+                        intent.putExtra("garageName", garageName);
+                        intent.putExtra("floorName", floorName);
                         System.out.println("Going to start new Parking_Space_Activity activity");
                         startActivity(intent);
                         Toast.makeText(getApplicationContext(),
-                                "Parking information has been updated!", Toast.LENGTH_LONG).show();
+                                "Parking information has been updated!", Toast.LENGTH_SHORT).show();
 
                     } else {
                         System.out.println("NOTHING WAS TRUE?");

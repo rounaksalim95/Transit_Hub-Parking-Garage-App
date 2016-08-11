@@ -30,8 +30,11 @@ public class Floor_Activity extends AppCompatActivity {
     // JSONObject that holds each individual floor
     private JSONObject floor;
 
-    // Name of the garage and floor
-    private String garageName, floorName;
+    // Name of the garage
+    private String garageName;
+
+    // Name of floor (number)
+    private int floorName;
 
     // Id of the garage
     private int id;
@@ -50,9 +53,6 @@ public class Floor_Activity extends AppCompatActivity {
 
         mLinearLayout = (LinearLayout) findViewById(R.id.floorView);
         Intent intent = getIntent();
-
-        // Get the id of the garage
-        id = intent.getIntExtra("id", DEFAULT_VALUE);
 
         garageName = intent.getStringExtra("garageName");
 
@@ -83,7 +83,6 @@ public class Floor_Activity extends AppCompatActivity {
         editor.putBoolean(this.getLocalClassName(), true);
         editor.putBoolean("Start", false);
         editor.putBoolean("Parking_Space_Activity", false);
-        editor.putInt("garageID", id);
         editor.putString("garageName", garageName);
         editor.apply();
     }
@@ -148,7 +147,7 @@ public class Floor_Activity extends AppCompatActivity {
     public void displayFloors() throws JSONException {
 
         // Get the Json data for the appropriate garage
-        garage = getCorrectGarage(garageHolder);
+        garage = getCorrectGarage(garageHolder, garageName);
 
         floors = garage.getJSONArray("floors");
 
@@ -160,9 +159,9 @@ public class Floor_Activity extends AppCompatActivity {
         if (floors != null) {
 
             // Mapping floor number to corresponding object indices
-            for (int i = 0; i < floors.length(); ++i) {
-                floorNumber = floors.getJSONObject(i).getInt("floorNumber");
-                translation[floorNumber] = i;
+            for (floorName = 0; floorName < floors.length(); ++floorName) {
+                floorNumber = floors.getJSONObject(floorName).getInt("floorNumber");
+                translation[floorNumber] = floorName;
             }
 
             // Setup UI
@@ -170,19 +169,20 @@ public class Floor_Activity extends AppCompatActivity {
                 Button button = new Button(this);
                 button.setText("Floor Number: " + (i + 1));
 
-                // Get the name / number of the floor
-                
+                // Set ID to floor number
+                button.setId(i + 1);
 
-                // Get the corresponding object index for this floor
-                button.setId(translation[i + 1]);
+                // Set tag to garage name
+                button.setTag(garageName);
 
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(getBaseContext(), Parking_Space_Activity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         intent.putExtra("data", data.toString());
-                        intent.putExtra("floorID", view.getId());
-                        intent.putExtra("garageID", id);
+                        intent.putExtra("garageName", view.getTag().toString());
+                        intent.putExtra("floorName", view.getId());
                         startActivity(intent);
                     }
                 });
@@ -202,7 +202,12 @@ public class Floor_Activity extends AppCompatActivity {
     }
 
 
-    public JSONObject getCorrectGarage(JSONArray garages) throws JSONException {
+    /**
+     * Gets the correct garage matching by name
+     * @param garages JSONArray that contains all garages
+     * @return JSONObject of appropriate garage
+     */
+    public static JSONObject getCorrectGarage(JSONArray garages, String garageName) throws JSONException {
         System.out.println(garageName);
         for (int i = 0; i < garages.length(); ++i) {
             System.out.println(garages.getJSONObject(i).getString("garageName"));
@@ -223,4 +228,10 @@ public class Floor_Activity extends AppCompatActivity {
         return Start.parseJson(data);
     }
 
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this, Start.class));
+    }
 }
