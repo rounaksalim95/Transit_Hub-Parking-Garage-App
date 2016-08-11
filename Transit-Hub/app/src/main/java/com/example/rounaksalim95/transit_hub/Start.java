@@ -234,6 +234,7 @@ public class Start extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    System.out.println("WEBSOCKET DATA IS : " + holder);
                     Intent intent = new Intent(getApplicationContext(), Start.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                             Intent.FLAG_ACTIVITY_CLEAR_TASK);
