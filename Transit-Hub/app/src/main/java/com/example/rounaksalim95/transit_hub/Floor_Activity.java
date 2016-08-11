@@ -54,6 +54,8 @@ public class Floor_Activity extends AppCompatActivity {
         // Get the id of the garage
         id = intent.getIntExtra("id", DEFAULT_VALUE);
 
+        garageName = intent.getStringExtra("garageName");
+
         // Get the JsonArray String data present in the intent
         try {
             data = new JSONArray(intent.getStringExtra("garages"));
@@ -80,6 +82,7 @@ public class Floor_Activity extends AppCompatActivity {
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean(this.getLocalClassName(), true);
         editor.putInt("garageID", id);
+        editor.putString("garageName", garageName);
         editor.apply();
     }
 
@@ -130,7 +133,7 @@ public class Floor_Activity extends AppCompatActivity {
     public void displayFloors() throws JSONException {
 
         // Get the Json data for the appropriate garage
-        garage = garageHolder.getJSONObject(id);
+        garage = getCorrectGarage(garageHolder);
 
         floors = garage.getJSONArray("floors");
 
@@ -178,6 +181,18 @@ public class Floor_Activity extends AppCompatActivity {
             mLinearLayout.addView(textView);
         }
 
+    }
+
+
+    public JSONObject getCorrectGarage(JSONArray garages) throws JSONException {
+        System.out.println(garageName);
+        for (int i = 0; i < garages.length(); ++i) {
+            System.out.println(garages.getJSONObject(i).getString("garageName"));
+            if (garages.getJSONObject(i).getString("garageName").equals(garageName)) {
+                return garages.getJSONObject(i);
+            }
+        }
+        return null;
     }
 
 

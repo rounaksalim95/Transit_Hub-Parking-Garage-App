@@ -36,6 +36,9 @@ public class Start extends AppCompatActivity {
     // Reference for WebSocket Client
     private WebSocketClient mWebSocketClient;
 
+    // Holds name of garage
+    private String garageName;
+
     // Default value for SharedPreferences int
     private final int DEFAULT_VALUE = -1;
 
@@ -97,8 +100,6 @@ public class Start extends AppCompatActivity {
 
         JSONObject garage;
 
-        String garageName;
-
         if (garageJson != null) {
 
             // Loop through all the garages in the database and display buttons for them
@@ -120,6 +121,7 @@ public class Start extends AppCompatActivity {
                         Intent intent = new Intent(getBaseContext(), Floor_Activity.class);
                         intent.putExtra("garages", data.toString());
                         intent.putExtra("id", view.getId());
+                        intent.putExtra("garageName", garageName);
                         startActivity(intent);
                     }
                 });
@@ -228,6 +230,7 @@ public class Start extends AppCompatActivity {
                         intent = new Intent(getApplicationContext(), Floor_Activity.class);
                         intent.putExtra("garages", holder.toString());
                         intent.putExtra("id", id);
+                        intent.putExtra("garageName", garageName);
                         System.out.println("Going to start new Floor_Activity activity");
                         startActivity(intent);
 
