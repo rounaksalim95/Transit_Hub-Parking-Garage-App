@@ -214,6 +214,7 @@ public class Floor_Activity extends AppCompatActivity {
      * @return Returns processed JSON data
      */
     public static JSONArray parseGarageData(JSONArray data) {
+        System.out.println("THIS IS DATA : " + data);
         return Start.parseJson(data);
     }
 

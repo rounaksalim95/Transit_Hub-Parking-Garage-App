@@ -135,8 +135,8 @@ public class Start extends AppCompatActivity {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(getBaseContext(), Floor_Activity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        Intent intent = new Intent(getBaseContext(), Floor_Activity.class);/*
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
                         intent.putExtra("garages", data.toString());
                         intent.putExtra("garageName", view.getTag().toString());
                         startActivity(intent);
@@ -234,27 +234,32 @@ public class Start extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    Intent intent;
+
+                    System.out.println("WebSockets information : " + holder);
+                    //Intent intent;
                     SharedPreferences sp = getSharedPreferences("ACTIVE", MODE_PRIVATE);
                     SharedPreferences.Editor editor = sp.edit();
                     if (sp.getBoolean("Start", false)) {
+                        Intent intent = new Intent();
                         intent = new Intent(getApplicationContext(), Start.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        /*intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
                         System.out.println("Going to start new Start activity");
                         startActivity(intent);
                         Toast.makeText(getApplicationContext(),
                                 "Parking information has been updated!", Toast.LENGTH_SHORT).show();
 
                     } else if (sp.getBoolean("Floor_Activity", false)) {
+                        Intent intent = new Intent();
                         System.out.println(sp.getBoolean("Floor_Activity", false));
                         int id = sp.getInt("garageID", DEFAULT_VALUE);
                         String garageName = sp.getString("garageName", "DEFAULT");
                         intent = new Intent(getApplicationContext(), Floor_Activity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        /*intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
                         intent.putExtra("garages", holder.toString());
                         intent.putExtra("id", id);
                         intent.putExtra("garageName", garageName);
-                        System.out.println("Going to start new Floor_Activity activity");
+                        System.out.println("Going to start new Floor_Activity activity : " + garageName);
+                        System.out.println("This is holder : " + holder);
                         // Set SharedPreference to true
                         editor.putBoolean("Floor_Activity", true);
                         startActivity(intent);
@@ -262,8 +267,9 @@ public class Start extends AppCompatActivity {
                                 "Parking information has been updated!", Toast.LENGTH_SHORT).show();
 
                     } else if (sp.getBoolean("Parking_Space_Activity", false)) {
+                        Intent intent = new Intent();
                         intent = new Intent(getApplicationContext(), Parking_Space_Activity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        /*intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
                         int garageID = sp.getInt("garageID", DEFAULT_VALUE);
                         int floorID = sp.getInt("floorID", DEFAULT_VALUE);
                         int floorName = sp.getInt("floorName", DEFAULT_VALUE);
