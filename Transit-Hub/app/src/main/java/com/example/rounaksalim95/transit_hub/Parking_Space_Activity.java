@@ -17,6 +17,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 
 public class Parking_Space_Activity extends AppCompatActivity {
 
@@ -157,15 +159,15 @@ public class Parking_Space_Activity extends AppCompatActivity {
         // Holds parkingSlotID
         int parkingSlotID;
 
-        // Array used for mapping parkingSlotID to object index
-        int translation[] = new int[parkingSlots.length() + 1];
+        // HashMap used for mapping parkingSlotID to object index
+        HashMap<Integer, Integer> translation = new HashMap<>();
 
         if (parkingSlots != null) {
 
             // Loop through slots and map parkingSlotID to corresponding object index
             for (int i = 0; i < parkingSlots.length(); ++i) {
                 parkingSlotID = parkingSlots.getJSONObject(i).getInt("parkingSpotID");
-                translation[parkingSlotID] = i;
+                translation.put(parkingSlotID, i);
             }
 
             // Loop through all the parking slots and display their availability
@@ -198,7 +200,7 @@ public class Parking_Space_Activity extends AppCompatActivity {
 
                     // Set the drawable to the right of the text
                     lhs.setCompoundDrawables(null, null,
-                            getDrawable(parkingSlots.getJSONObject(translation[i])), null);
+                            getDrawable(parkingSlots.getJSONObject(translation.get(i))), null);
 
                 } else {
                     lhsString = "Parking spot " + i + " : ";
@@ -208,10 +210,10 @@ public class Parking_Space_Activity extends AppCompatActivity {
 
                     // Set the drawable to the right of the text
                     lhs.setCompoundDrawables(null, null,
-                            getDrawable(parkingSlots.getJSONObject(translation[i])), null);
+                            getDrawable(parkingSlots.getJSONObject(translation.get(i))), null);
 
                     rhs.setCompoundDrawables(null, null,
-                            getDrawable(parkingSlots.getJSONObject(translation[i + 1])), null);
+                            getDrawable(parkingSlots.getJSONObject(translation.get(i + 1))), null);
                 }
 
                 // Add the views to the row
@@ -257,33 +259,6 @@ public class Parking_Space_Activity extends AppCompatActivity {
         } else {
             return unavailable;
         }
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Cache the menu
-        optionsMenu = menu;
-
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.refresh:
-                // Get back to the Start activity
-                finish();
-                startActivity(new Intent(this, Start.class));
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
 
