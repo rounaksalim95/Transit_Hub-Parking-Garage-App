@@ -77,6 +77,10 @@ public class Parking_Space_Activity extends AppCompatActivity {
         available.setBounds(0, 0, 135, 135);
         unavailable.setBounds(0, 0, 135, 135);
 
+        // Extract the garage and floor names
+        garageName = intent.getStringExtra("garageName");
+        floorName = intent.getIntExtra("floorName", DEFAULT_VALUE);
+
         try {
             /*floor = new JSONObject(intent.getStringExtra("floor"));*/
             data = new JSONArray(intent.getStringExtra("data"));
@@ -84,14 +88,44 @@ public class Parking_Space_Activity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        // Extract the garage and floor names
-        garageName = intent.getStringExtra("garageName");
-        floorName = intent.getIntExtra("floorName", DEFAULT_VALUE);
+        // Parse the raw JSON data to extract garages
+        data = Floor_Activity.parseGarageData(data);
 
+        // Get the JSON data for the appropriate garage
         try {
-            displayParkingSlots();
+            garage = Floor_Activity.getCorrectGarage(data, garageName);
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+
+        // In case the garage whose parking slots we are viewing is removed
+        if (garage == null) {
+            startActivity(new Intent(this, Start.class));
+            Toast.makeText(this, "This garage has been removed!", Toast.LENGTH_SHORT).show();
+
+        }
+
+        // Get the JSON data for the appropriate floor
+        try {
+            floor = getCorrectFloor(garage.getJSONArray("floors"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if (floor == null) {
+            Intent floorIntent = new Intent(this, Floor_Activity.class);
+            intent.putExtra("garages", data.toString());
+            intent.putExtra("garageName", garageName);
+            startActivity(floorIntent);
+            Toast.makeText(this, "This floor hsa been removed!", Toast.LENGTH_SHORT).show();
+
+        } else {
+            try {
+                displayParkingSlots();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
@@ -140,15 +174,6 @@ public class Parking_Space_Activity extends AppCompatActivity {
      * @throws JSONException
      */
     private void displayParkingSlots() throws JSONException {
-
-        // Parse the raw JSON data to extract garages
-        data = Floor_Activity.parseGarageData(data);
-
-        // Get the JSON data for the appropriate garage
-        garage = Floor_Activity.getCorrectGarage(data, garageName);
-
-        // Get the JSON data for the appropriate floor
-        floor = getCorrectFloor(garage.getJSONArray("floors"));
 
         // Get the JSON data for the parking slots
         parkingSlots = floor.getJSONArray("parkingSpots");

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.*;
 
@@ -64,11 +65,27 @@ public class Floor_Activity extends AppCompatActivity {
 
         garageHolder = parseGarageData(data);
 
+        // Get the Json data for the appropriate garage
         try {
-            displayFloors();
+            garage = getCorrectGarage(garageHolder, garageName);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+
+        // In case the garage whose floor we are in is removed
+        if (garage != null) {
+            try {
+                displayFloors();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            this.finish();
+            startActivity(new Intent(this, Start.class));
+            Toast.makeText(this, "This garage has been removed!", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 
@@ -119,9 +136,6 @@ public class Floor_Activity extends AppCompatActivity {
      */
     public void displayFloors() throws JSONException {
 
-        // Get the Json data for the appropriate garage
-        garage = getCorrectGarage(garageHolder, garageName);
-
         floors = garage.getJSONArray("floors");
 
         if (floors != null) {
@@ -141,7 +155,6 @@ public class Floor_Activity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(getBaseContext(), Parking_Space_Activity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         intent.putExtra("data", data.toString());
                         intent.putExtra("garageName", view.getTag().toString());
                         intent.putExtra("floorName", view.getId());
